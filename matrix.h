@@ -8,8 +8,9 @@ class Matrix
 	private:
 		std::vector<std::vector<double>> matrix;	//inner vectors in outer vector are rows!
 	public:
-		Matrix(unsigned int r = 0, unsigned int c = 0);
-		Matrix(unsigned int r = 0, unsigned int c = 0, std::istream& inpstream);
+		Matrix(unsigned int r = 0, unsigned int c = 0);				//default constructor
+		Matrix(unsigned int r = 0, unsigned int c = 0, std::istream& inpstream);//direct-from-file constructor
+		Matrix(const Matrix& mat);		//matrix copy constructor
 
 		Matrix operator+(const Matrix& rhs);	//matrix addition
 		Matrix operator-(const Matrix& rhs);	//matrix subtraction

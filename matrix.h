@@ -21,6 +21,13 @@ class Matrix
 		unsigned int get_rowSize();		//returns row size of matrix
 		unsigned int get_colSize();		//returns col size of matrix
 
+		bool valid_mat_add(const Matrix& rhs);	//checks if matrix addition can be succesfully performed or not
+		bool valid_mat_mult(const Matrix& rhs);	//checks if matrix mult can be successfuly performed or not
+		bool is_nxn();				//checks if matrix is nxn
+		bool is_nonsingular(const double& det);	//checks if matrix is nonsingular using determinant
+
+		double determinant();			//returns the matrix's determinant if an nxn matrix
+
 };
 
 

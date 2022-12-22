@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include <iostream>
+#include <cmath>
 
 
 
@@ -32,6 +33,25 @@ Matrix::Matrix(unsigned int r = 0, unsigned int c = 0, std::istream& inpstream)
 
 //copy constructor
 Matrix::Matrix(const Matrix& mat) { this->matrix.assign(mat.begin(), mat.end()); }
+
+
+//copy constructor by omission
+Matrix::Matrix(const Matrix& mat, size_t row, size_t col)
+{
+	//copy original mat, then delete row and col from it!
+	this->matrix.assign(mat.begin(), mat.end());
+
+	//for cols we need to iterate to each vector pos! - do this first before erasing a row!
+	for(auto r_itr = this->matrix.begin(); r_itr != this->matrix.end(); ++r_itr)
+	{
+		r_itr->erase(r_itr->begin() + col); // erase each element in the col
+	}
+
+	//for rows, since inner vectors are rows, it is easy!
+	this->matrix.erase(this->matrix.begin() + row);
+
+	//done! - size should now be (n-1)x(m-1) from original!
+}
 
 
 
@@ -133,5 +153,17 @@ Matrix Matrix::operator*(const double& rhs)
 	return C;
 }
 
+
+
+
+//checking(bool) methods-----
+bool Matrix::valid_mat_add(const Matrix& rhs) { if(this->get_rowSize() == rhs.get_rowSize() && this->get_colSize() == rhs.get_colSize()) return true; return false; }
+
+bool Matrix::valid_mat_mult(const Matrix& rhs) { if(this->get_colSize() == rhs.get_rowSize()) return true; return false; }
+
+
+bool Matrix::is_nxn() { if(this->getrowSize() == this->get_colSize()) return true; return false; }
+
+bool Matrix::is_nonsingular(const double& det) { if(det == 0 && this->is_nxn()) return true; return false; }
 
 

@@ -7,10 +7,12 @@ class Matrix
 {
 	private:
 		std::vector<std::vector<double>> matrix;	//inner vectors in outer vector are rows!
+
 	public:
 		Matrix(unsigned int r = 0, unsigned int c = 0);				//default constructor
 		Matrix(unsigned int r = 0, unsigned int c = 0, std::istream& inpstream);//direct-from-file constructor
 		Matrix(const Matrix& mat);		//matrix copy constructor
+		Matrix(const Matrix& mat, size_t row, size_t col);	//matrix copy constructor by omission! Excludes the row & col specified!
 
 		Matrix operator+(const Matrix& rhs);	//matrix addition
 		Matrix operator-(const Matrix& rhs);	//matrix subtraction
@@ -26,8 +28,6 @@ class Matrix
 		bool valid_mat_mult(const Matrix& rhs);	//checks if matrix mult can be successfuly performed or not
 		bool is_nxn();				//checks if matrix is nxn
 		bool is_nonsingular(const double& det);	//checks if matrix is nonsingular using determinant
-
-		double determinant();			//returns the matrix's determinant if an nxn matrix
 
 };
 

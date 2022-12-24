@@ -1,4 +1,6 @@
 #include "matrix.h"
+#include <string>
+#include <fstream>
 
 //determinant function - using cofactor expansion and recursion! - base case should be getting a 2x2 matrix to find determinant!
 double determinant(const Matrix& mat);
@@ -6,16 +8,71 @@ double det_recur(const Matrix& mat, size_t row, size_t col);
 
 
 //cramer's rule function
-std::vector<double> cramers_rule(const Matrix& mat, const std::vector<double>& x);
+Matrix cramers_rule(const Matrix& mat, const Matrix& b);
 
+//open file method to get an input stream to matrix data - returns false if failed to open!
+bool open_file(std::ifstream& in_filestr, const std::string& filepath);
 
-
+void formatline(int len); //prints a simple line depending on the size of chars given!
 
 
 
 //Main func for this program!
-int main()
+int main(int argc, char** argv)
 {
+	//main function is to do cramers rule - Needs two files representing two matrix object's data!!
+	//program will exit if not satisfied.
+	
+	if(argc != 3)
+	{
+		puts("Error: wrong usage!\nUsage: ./cramers_rule [matrix file data] [vector file data]");
+		exit(EXIT_FAILURE);
+	}
+
+	std::ifstream inpstream_mat, inpstream_vec;	//two inp file streams
+	if(open_file(inpstream_mat, argv[1]))
+	{
+		printf("open_file: Failed to open file \"%s\"", argv[1]);
+		exit(EXIT_FAILURE);
+	}
+	if(open_file(inpstream_vec, argv[2]))
+	{
+		printf("open_file: Failed to open file \"%s\"", argv[2]);
+		exit(EXIT_FAILURE);
+	}
+
+
+	//temp vars to read in size of matricies to be costructed from input stream
+	int r,c;
+	inpstream_mat >> r >> c;
+	Matrix A(r, c, inpstream_mat);
+
+	inpstream_vec >> r >> c;
+	Matrix b(r, c, inpstream_vec);
+
+
+
+	puts("\nMatrix A");
+	formatline(10);
+	A.printmat();
+	formatline(10);
+
+	puts("\nVector b (result)");
+	formatline(10);
+	x.printmat();
+	formatline(10);
+
+
+	puts("Finding the solution x from the linear system: Ax = b using Cramer's rule where A is nxn and x & b are nx1 matricies/vectors");
+	Matrix x = cramers_rule(A, b);
+
+
+	puts("\nVector x (solution)");
+	formatline(10);
+	x.printmat();
+	formatline(10);
+
+
 	return 0;
 }
 
@@ -96,7 +153,47 @@ double det_recur(const Matrix& mat, size_t row, size_t col)
 
 
 
-std::vector<double> cramers_rule(const Matrix& mat, const std::vector<double>& x)
+Matrix cramers_rule(const Matrix& mat, const Matrix& b)
 {
+	//find the solution vec x by find each element of it(ie: x_1, x_2... x_n) where
+	// x_i = det(A_i)/det(A) where A_i is the matrix A with the ith column replaced with the values of the result column vector b
+	
+	Matrix x;
+
+
+	for(size_t i = 0; i < mat.get_colSize(); i++)
+	{
+		Matrix Ai(mat);
+		Ai.replace_col(b, i);
+
+		double xi = determinant(Ai) / determinant(mat);
+		std::vector<double> xrow_i(1, xi); //1 col, with value xi
+
+		//push back new row into x matrix(col vector) - should be a copy???
+		x.push_back(x_rowi);
+	}
+
+	return x;
 }
+
+
+
+bool openfile(std::ifstream& in_filestr, const std::string& filepath)
+{
+	in_filestr.open(filepath);
+	if(!in_filestr)
+		return false;
+	return true;
+}
+
+
+
+void formatline(int len)
+{
+	std::cout << '\n';
+	for(int i = 0; i < len; i++)
+		std::cout << '-';
+	std::cout << '\n';
+}
+
 

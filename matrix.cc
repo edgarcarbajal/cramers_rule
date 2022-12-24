@@ -77,6 +77,41 @@ unsigned int get_colSize() { return this->matrix[0].size(); }
 
 
 
+void printmat()
+{
+	printf("%u x %u\n\n", this->get_rowSize(), this->get_colSize());
+
+	for(auto elem : this->matrix)
+	{
+		for(auto innerelem : elem)
+		{
+			std::cout << innerelem << ' ';
+		}
+		std::cout << '\n';
+	}
+}
+
+
+
+void replace_col(const Matrix& b, size_t col)
+{
+	if(b.get_rowSize() != this->get_rowSize() || b.get_colSize() != 1)
+	{
+		puts("replace_col: Not valid b-vector to replace col!");
+		exit(EXIT_FAILURE);
+	}
+
+	//replace all elements in a certain column with the elements in b vector
+	for(size_t i = 0; i < this->get_rowSize(); i++)
+	{
+		this->matrix[i][col] = b[i][0];		//should only have 1 element in inner vectors since they represent rows
+	}
+}
+
+
+
+
+
 //operator methods----
 Matrix Matrix::operator+(const Matrix& rhs)
 {

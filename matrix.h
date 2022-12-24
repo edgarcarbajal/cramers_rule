@@ -23,6 +23,8 @@ class Matrix
 		void size();				//returns size(nxm) of matrix printed in stdout
 		unsigned int get_rowSize();		//returns row size of matrix
 		unsigned int get_colSize();		//returns col size of matrix
+		void printmat();			//prints matrix in its corresponing size - not taking into account window size
+		void replace_col(const Matrix& b, size_t col);	//replaces a column in a matrix with a vector(nx1 matrix) - necessary for cramer's rule
 
 		bool valid_mat_add(const Matrix& rhs);	//checks if matrix addition can be succesfully performed or not
 		bool valid_mat_mult(const Matrix& rhs);	//checks if matrix mult can be successfuly performed or not

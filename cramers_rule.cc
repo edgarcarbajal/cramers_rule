@@ -1,17 +1,19 @@
 #include "matrix.h"
 #include <string>
 #include <fstream>
+#include <cmath>
 
 //determinant function - using cofactor expansion and recursion! - base case should be getting a 2x2 matrix to find determinant!
-double determinant(const Matrix& mat);
-double det_recur(const Matrix& mat, size_t row, size_t col);
+double determinant(Matrix& mat);
+double det_recur(Matrix& mat, size_t row, size_t col);
 
 
 //cramer's rule function
-Matrix cramers_rule(const Matrix& mat, const Matrix& b);
+Matrix cramers_rule (Matrix& mat, Matrix& b);
 
 //open file method to get an input stream to matrix data - returns false if failed to open!
 bool open_file(std::ifstream& in_filestr, const std::string& filepath);
+bool close_file(std::ifstream& in_filestr);
 
 void formatline(int len); //prints a simple line depending on the size of chars given!
 
@@ -30,14 +32,14 @@ int main(int argc, char** argv)
 	}
 
 	std::ifstream inpstream_mat, inpstream_vec;	//two inp file streams
-	if(open_file(inpstream_mat, argv[1]))
+	if(!open_file(inpstream_mat, argv[1]))
 	{
-		printf("open_file: Failed to open file \"%s\"", argv[1]);
+		printf("open_file: Failed to open file \"%s\"\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
-	if(open_file(inpstream_vec, argv[2]))
+	if(!open_file(inpstream_vec, argv[2]))
 	{
-		printf("open_file: Failed to open file \"%s\"", argv[2]);
+		printf("open_file: Failed to open file \"%s\"\n", argv[2]);
 		exit(EXIT_FAILURE);
 	}
 
@@ -52,6 +54,18 @@ int main(int argc, char** argv)
 
 
 
+	if(!close_file(inpstream_mat))
+	{
+		printf("close_file: Failed to close file \"%s\"\n", argv[1]);
+		exit(EXIT_FAILURE);
+	}
+	if(!close_file(inpstream_vec))
+	{
+		printf("close_file: Failed to close file \"%s\"\n", argv[2]);
+		exit(EXIT_FAILURE);
+	}
+
+
 	puts("\nMatrix A");
 	formatline(10);
 	A.printmat();
@@ -59,7 +73,7 @@ int main(int argc, char** argv)
 
 	puts("\nVector b (result)");
 	formatline(10);
-	x.printmat();
+	b.printmat();
 	formatline(10);
 
 
@@ -83,7 +97,7 @@ int main(int argc, char** argv)
 
 
 
-double determinant(const Matrix& mat)
+double determinant(Matrix& mat)
 {
 	//always choose the expansion of det(A) along the first(i)th row - so always i = 1 or in coding i = 0
 	//ie: det(A) = a_i1(A_i1) + a_i2(A_i2) + ... + a_in(A_in)
@@ -111,7 +125,7 @@ double determinant(const Matrix& mat)
 	{
 		//doing cofactor expansion with fixed row i = 0
 		//The i & j being -1 of what they should be should not affect the result of the positive/negative 1....
-		res += mat[0][j] * (pow(-1, 0 + j) * det_recur(mat, 0, j)) //adding this every loop is equivalent to the cofactor expansion equation
+		res += mat[0][j] * (pow(-1, 0 + j) * det_recur(mat, 0, j)); //adding this every loop is equivalent to the cofactor expansion equation
 	}
 
 	//return the new answer after cofactor expansion! (recursion done)
@@ -120,7 +134,7 @@ double determinant(const Matrix& mat)
 
 
 
-double det_recur(const Matrix& mat, size_t row, size_t col)
+double det_recur(Matrix& mat, size_t row, size_t col)
 {
 	//already checked for nxn in starter function so no need
 
@@ -142,7 +156,7 @@ double det_recur(const Matrix& mat, size_t row, size_t col)
 	{
 		//doing cofactor expansion with fixed row i = 0
 		//The i & j being -1 of what they should be should not affect the result of the positive/negative 1....
-		res += M[0][j] * (pow(-1, 0 + j) * det_recur(M, 0, j)) //adding this every loop is equivalent to the cofactor expansion equation
+		res += M[0][j] * (pow(-1, 0 + j) * det_recur(M, 0, j)); //adding this every loop is equivalent to the cofactor expansion equation
 	}
 
 	//return the new answer after cofactor expansion! (recursion done for this matrix)
@@ -153,7 +167,7 @@ double det_recur(const Matrix& mat, size_t row, size_t col)
 
 
 
-Matrix cramers_rule(const Matrix& mat, const Matrix& b)
+Matrix cramers_rule(Matrix& mat, Matrix& b)
 {
 	//find the solution vec x by find each element of it(ie: x_1, x_2... x_n) where
 	// x_i = det(A_i)/det(A) where A_i is the matrix A with the ith column replaced with the values of the result column vector b
@@ -170,7 +184,7 @@ Matrix cramers_rule(const Matrix& mat, const Matrix& b)
 		std::vector<double> xrow_i(1, xi); //1 col, with value xi
 
 		//push back new row into x matrix(col vector) - should be a copy???
-		x.push_back(x_rowi);
+		x.push_back_row(xrow_i);
 	}
 
 	return x;
@@ -178,9 +192,18 @@ Matrix cramers_rule(const Matrix& mat, const Matrix& b)
 
 
 
-bool openfile(std::ifstream& in_filestr, const std::string& filepath)
+bool open_file(std::ifstream& in_filestr, const std::string& filepath)
 {
 	in_filestr.open(filepath);
+	if(!in_filestr)
+		return false;
+	return true;
+}
+
+
+bool close_file(std::ifstream& in_filestr)
+{
+	in_filestr.close();
 	if(!in_filestr)
 		return false;
 	return true;

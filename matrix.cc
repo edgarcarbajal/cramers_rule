@@ -1,13 +1,11 @@
 #include "matrix.h"
-#include <iostream>
-#include <cmath>
 
 
 
 //default constructor
-Matrix::Matrix(unsigned int r = 0, unsigned int c = 0)
+Matrix::Matrix(unsigned int r, unsigned int c)
 {
-	//matrix will be constructed as the zero-matrix
+	//matrix will be constructed as the zero-matrix by default if not given arguments
 	this->matrix.resize(r);	//allocate # of rows
 	for(auto elem : matrix)
 	{
@@ -17,8 +15,8 @@ Matrix::Matrix(unsigned int r = 0, unsigned int c = 0)
 
 
 
-//constructor #1
-Matrix::Matrix(unsigned int r = 0, unsigned int c = 0, std::istream& inpstream)
+//constructor #1 -	No default arguments here! please insert row & col size!
+Matrix::Matrix(unsigned int r, unsigned int c, std::istream& inpstream)
 {
 	this->matrix.resize(r);	//allocate # of rows
 	for(auto elem : matrix)
@@ -70,14 +68,18 @@ void Matrix::construct_matrix(std::istream& inpstream)
 
 
 //general info methods
-void size() { printf("Size of this matrix is: %ux%u", this->get_rowSize(), this->get_colSize()); }
+void Matrix::size() const { printf("Size of this matrix is: %ux%u", this->get_rowSize(), this->get_colSize()); }
 
-unsigned int get_rowSize() { return this->matrix.size(); }
-unsigned int get_colSize() { return this->matrix[0].size(); }
+unsigned int Matrix::get_rowSize() const { return this->matrix.size(); }
+unsigned int Matrix::get_colSize() const { return this->matrix[0].size(); }
+
+
+std::vector<std::vector<double>>::const_iterator Matrix::begin() const { return this->matrix.begin(); }
+std::vector<std::vector<double>>::const_iterator Matrix::end() const { return this->matrix.end(); }
 
 
 
-void printmat()
+void Matrix::printmat() const
 {
 	printf("%u x %u\n\n", this->get_rowSize(), this->get_colSize());
 
@@ -93,7 +95,7 @@ void printmat()
 
 
 
-void replace_col(const Matrix& b, size_t col)
+void Matrix::replace_col(Matrix& b, size_t col)
 {
 	if(b.get_rowSize() != this->get_rowSize() || b.get_colSize() != 1)
 	{
@@ -111,9 +113,14 @@ void replace_col(const Matrix& b, size_t col)
 
 
 
+void Matrix::push_back_row(std::vector<double>& row) { this->matrix.push_back(row); }
+
+
+
+
 
 //operator methods----
-Matrix Matrix::operator+(const Matrix& rhs)
+Matrix Matrix::operator+(Matrix& rhs)
 {
 	if(!valid_mat_add(rhs))
 	{
@@ -139,11 +146,15 @@ Matrix Matrix::operator+(const Matrix& rhs)
 
 
 //The syntax it should call operator+ and operator* (the scalar version)
-Matrix Matrix::operator-(const Matrix& rhs) { return (*this + (rhs * -1.0)); }
+Matrix Matrix::operator-(Matrix& rhs) 
+{
+	Matrix B = rhs * -1.0;
+	return *this + B;
+}
 
 
 
-Matrix Matrix::operator*(const Matrix& rhs)
+Matrix Matrix::operator*(Matrix& rhs)
 {
 	if(!valid_mat_mult(rhs))
 	{
@@ -189,16 +200,20 @@ Matrix Matrix::operator*(const double& rhs)
 }
 
 
+//should return inner vector, then operator[] from std::vector should get the returned vector and return the number: ie--> mat[1][2] - returns row 2, then elem 3
+std::vector<double>& Matrix::operator[](const int& rhs) { return this->matrix[rhs]; }
+
+
 
 
 //checking(bool) methods-----
-bool Matrix::valid_mat_add(const Matrix& rhs) { if(this->get_rowSize() == rhs.get_rowSize() && this->get_colSize() == rhs.get_colSize()) return true; return false; }
+bool Matrix::valid_mat_add(const Matrix& rhs) const { if(this->get_rowSize() == rhs.get_rowSize() && this->get_colSize() == rhs.get_colSize()) return true; return false; }
 
-bool Matrix::valid_mat_mult(const Matrix& rhs) { if(this->get_colSize() == rhs.get_rowSize()) return true; return false; }
+bool Matrix::valid_mat_mult(const Matrix& rhs) const { if(this->get_colSize() == rhs.get_rowSize()) return true; return false; }
 
 
-bool Matrix::is_nxn() { if(this->getrowSize() == this->get_colSize()) return true; return false; }
+bool Matrix::is_nxn() const { if(this->get_rowSize() == this->get_colSize()) return true; return false; }
 
-bool Matrix::is_nonsingular(const double& det) { if(det == 0 && this->is_nxn()) return true; return false; }
+bool Matrix::is_nonsingular(const double& det) const { if(det == 0 && this->is_nxn()) return true; return false; }
 
 

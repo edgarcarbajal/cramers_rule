@@ -1,0 +1,26 @@
+-=###CRAMER'S RULE###=-
+============================================================
+
+Matrix A
+
+----------
+3 x 3
+
+2 3 7 
+-2 0 -4 
+1 2 4 
+
+----------
+
+Vector b (result)
+
+----------
+3 x 1
+
+0 
+0 
+0 
+
+----------
+Finding the solution x from the linear system: Ax = b using Cramer's rule where A is nxn and x & b are nx1 matricies/vectors
+Error! - Cannot find solution of this linear system using Cramer's Rule: not a nonsingular matrix!

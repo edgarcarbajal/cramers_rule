@@ -15,7 +15,7 @@ Matrix cramers_rule (Matrix& mat, Matrix& b);
 bool open_file(std::ifstream& in_filestr, const std::string& filepath);
 bool close_file(std::ifstream& in_filestr);
 
-void formatline(int len); //prints a simple line depending on the size of chars given!
+void formatline(int len, char linechar); //prints a simple line depending on the size of chars given! Must specify what char to use!
 
 
 
@@ -66,15 +66,19 @@ int main(int argc, char** argv)
 	}
 
 
+	printf("-=###CRAMER'S RULE###=-");
+	formatline(60, '=');
+
+
 	puts("\nMatrix A");
-	formatline(10);
+	formatline(10, '-');
 	A.printmat();
-	formatline(10);
+	formatline(10, '-');
 
 	puts("\nVector b (result)");
-	formatline(10);
+	formatline(10, '-');
 	b.printmat();
-	formatline(10);
+	formatline(10, '-');
 
 
 	puts("Finding the solution x from the linear system: Ax = b using Cramer's rule where A is nxn and x & b are nx1 matricies/vectors");
@@ -82,10 +86,71 @@ int main(int argc, char** argv)
 
 
 	puts("\nVector x (solution)");
-	formatline(10);
+	formatline(10, '-');
 	x.printmat();
-	formatline(10);
+	formatline(10, '-');
 
+
+
+	puts("\n\nChecking answer by multiplying A & x with matrix multiplication\n\t- Remember: Ax = b");
+	Matrix result = A * x;
+
+
+	puts("\nMatrix(vector) result from multiplying A & x");
+	formatline(10, '-');
+	result.printmat();
+	formatline(10, '-');
+
+
+
+	formatline(60, '=');
+
+
+	formatline(60, '@');
+	puts("\n\nTesting out the rest of the matrix operations not shown for the main function of cramer's rule!");
+
+	if(A.is_nxn())
+		puts("\nA is an nxn matrix by is_nxn() method!");
+	else
+		puts("\nA is not an nxn matrix by is_nxn() method");
+
+	double A_det = determinant(A);
+	printf("det(A) = %f\n", A_det);
+
+
+	if(A.is_nonsingular(A_det))
+		puts("\nA is nonsingular by is_nonsingular() method! (can also just check its determinant from eariler...)");
+	else
+		puts("\nA is singular by is_nonsingular() method! (can also just check its determinant from eariler...)");
+
+
+
+	puts("\n\nAddition and subtraction of matricies\n\nA + A = C\nContents of Matrix C");
+	Matrix C = A + A;
+
+	formatline(10, '-');
+	C.printmat();
+	formatline(10, '-');
+
+
+	puts("\nA = new C = C - A\nContents of new Matrix C");
+	C = C - A;
+
+	formatline(10, '-');
+	C.printmat();
+	formatline(10, '-');
+
+
+	//note to user - I have only implemented scalar multiplication where the matrix must be left-handside only!
+	puts("\n\nScalar multiplication of matricies\n\ncA = Ac = C where c is any real number (in this case c = 5)\nContents of Matrix C");
+	C = A * 5;
+
+	formatline(10, '-');
+	C.printmat();
+	formatline(10, '-');
+
+
+	formatline(60, '@');
 
 	return 0;
 }
@@ -172,15 +237,23 @@ Matrix cramers_rule(Matrix& mat, Matrix& b)
 	//find the solution vec x by find each element of it(ie: x_1, x_2... x_n) where
 	// x_i = det(A_i)/det(A) where A_i is the matrix A with the ith column replaced with the values of the result column vector b
 	
+	//cramer's rule only works if A is nonsingular(ie: A is nxn & has a nonzero determinant)
+	
+	
 	Matrix x;
-
+	double A_det = determinant(mat);
+	if(!mat.is_nonsingular(A_det))
+	{
+		puts("Error! - Cannot find solution of this linear system using Cramer's Rule: not a nonsingular matrix!");
+		exit(EXIT_FAILURE);
+	}
 
 	for(size_t i = 0; i < mat.get_colSize(); i++)
 	{
 		Matrix Ai(mat);
 		Ai.replace_col(b, i);
 
-		double xi = determinant(Ai) / determinant(mat);
+		double xi = determinant(Ai) / A_det;
 		std::vector<double> xrow_i(1, xi); //1 col, with value xi
 
 		//push back new row into x matrix(col vector) - should be a copy???
@@ -211,11 +284,11 @@ bool close_file(std::ifstream& in_filestr)
 
 
 
-void formatline(int len)
+void formatline(int len, char linechar)
 {
 	std::cout << '\n';
 	for(int i = 0; i < len; i++)
-		std::cout << '-';
+		std::cout << linechar;
 	std::cout << '\n';
 }
 

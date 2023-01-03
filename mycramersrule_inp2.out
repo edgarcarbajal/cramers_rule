@@ -1,0 +1,107 @@
+-=###CRAMER'S RULE###=-
+============================================================
+
+Matrix A
+
+----------
+3 x 3
+
+-2 3 -1 
+1 2 -1 
+-2 -1 1 
+
+----------
+
+Vector b (result)
+
+----------
+3 x 1
+
+1 
+4 
+-3 
+
+----------
+Finding the solution x from the linear system: Ax = b using Cramer's rule where A is nxn and x & b are nx1 matricies/vectors
+
+Vector x (solution)
+
+----------
+3 x 1
+
+2 
+3 
+4 
+
+----------
+
+
+Checking answer by multiplying A & x with matrix multiplication
+	- Remember: Ax = b
+
+Matrix(vector) result from multiplying A & x
+
+----------
+3 x 1
+
+1 
+4 
+-3 
+
+----------
+
+============================================================
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+Testing out the rest of the matrix operations not shown for the main function of cramer's rule!
+
+A is an nxn matrix by is_nxn() method!
+det(A) = -2.000000
+
+A is nonsingular by is_nonsingular() method! (can also just check its determinant from eariler...)
+
+
+Addition and subtraction of matricies
+
+A + A = C
+Contents of Matrix C
+
+----------
+3 x 3
+
+-4 6 -2 
+2 4 -2 
+-4 -2 2 
+
+----------
+
+A = new C = C - A
+Contents of new Matrix C
+
+----------
+3 x 3
+
+-2 3 -1 
+1 2 -1 
+-2 -1 1 
+
+----------
+
+
+Scalar multiplication of matricies
+
+cA = Ac = C where c is any real number (in this case c = 5)
+Contents of Matrix C
+
+----------
+3 x 3
+
+-10 15 -5 
+5 10 -5 
+-10 -5 5 
+
+----------
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

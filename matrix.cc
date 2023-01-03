@@ -7,7 +7,7 @@ Matrix::Matrix(unsigned int r, unsigned int c)
 {
 	//matrix will be constructed as the zero-matrix by default if not given arguments
 	this->matrix.resize(r);	//allocate # of rows
-	for(auto elem : matrix)
+	for(auto& elem : this->matrix)
 	{
 		elem.resize(c); //allocate # of cols
 	}
@@ -19,7 +19,7 @@ Matrix::Matrix(unsigned int r, unsigned int c)
 Matrix::Matrix(unsigned int r, unsigned int c, std::istream& inpstream)
 {
 	this->matrix.resize(r);	//allocate # of rows
-	for(auto elem : matrix)
+	for(auto& elem : this->matrix)
 	{
 		elem.resize(c); //allocate # of cols
 	}
@@ -56,13 +56,28 @@ Matrix::Matrix(const Matrix& mat, size_t row, size_t col)
 //helper constructor(from a file)
 void Matrix::construct_matrix(std::istream& inpstream)
 {
+//	double test = 0;
 	for(size_t i = 0; i < this->get_rowSize(); i++)
 	{
 		for(size_t j = 0; j < this->get_colSize(); j++)
 		{
+			/*
+			inpstream >> test;
+			std::cout << "num: " << test;
+			this->matrix[i][j] = test;
+			*/
 			inpstream >> this->matrix[i][j];
 		}
 	}
+}
+
+
+//destructor
+Matrix::~Matrix()
+{
+	for(auto& elem : this->matrix)
+		elem.clear();
+	this->matrix.clear();
 }
 
 
@@ -120,6 +135,16 @@ void Matrix::push_back_row(std::vector<double>& row) { this->matrix.push_back(ro
 
 
 //operator methods----
+//
+
+//assignment operator
+Matrix& Matrix::operator=(const Matrix& rhs) { this->matrix.assign(rhs.begin(), rhs.end()); return *this; }
+
+
+
+
+
+
 Matrix Matrix::operator+(Matrix& rhs)
 {
 	if(!valid_mat_add(rhs))
@@ -146,9 +171,9 @@ Matrix Matrix::operator+(Matrix& rhs)
 
 
 //The syntax it should call operator+ and operator* (the scalar version)
-Matrix Matrix::operator-(Matrix& rhs) 
+Matrix Matrix::operator-(Matrix& rhs)
 {
-	Matrix B = rhs * -1.0;
+	Matrix B = rhs * -1;
 	return *this + B;
 }
 
@@ -188,11 +213,11 @@ Matrix Matrix::operator*(const double& rhs)
 	//make copy of this matrix to return after doing ops!
 	Matrix C(*this);
 
-	for(size_t i = 0; i < this->get_rowSize(); i++)
+	for(size_t i = 0; i < C.get_rowSize(); i++)
 	{
-		for(size_t j = 0; j < this->get_colSize(); j++)
+		for(size_t j = 0; j < C.get_colSize(); j++)
 		{
-			(*this)[i][j] *= rhs;// scalar mult!
+			C[i][j] *= rhs;// scalar mult!
 		}
 	}
 
@@ -214,6 +239,6 @@ bool Matrix::valid_mat_mult(const Matrix& rhs) const { if(this->get_colSize() ==
 
 bool Matrix::is_nxn() const { if(this->get_rowSize() == this->get_colSize()) return true; return false; }
 
-bool Matrix::is_nonsingular(const double& det) const { if(det == 0 && this->is_nxn()) return true; return false; }
+bool Matrix::is_nonsingular(const double& det) const { if(det != 0 && this->is_nxn()) return true; return false; }
 
 

@@ -15,6 +15,9 @@ class Matrix
 		Matrix(const Matrix& mat);		//matrix copy constructor
 		Matrix(const Matrix& mat, size_t row, size_t col);	//matrix copy constructor by omission! Excludes the row & col specified!
 
+		~Matrix();				//destructor
+
+		Matrix& operator=(const Matrix& rhs);	//Assignment operator
 		Matrix operator+(Matrix& rhs);		//matrix addition
 		Matrix operator-(Matrix& rhs);		//matrix subtraction
 		Matrix operator*(Matrix& rhs);		//matrix multiplication
